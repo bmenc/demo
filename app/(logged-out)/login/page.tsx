@@ -26,7 +26,7 @@ import { Input } from "@/components/ui/input";
 
 const formSchema = zod.object({
   email: zod.string().email(),
-  password: zod.string(),
+  password: zod.string().min(8),
 });
 
 export default function LoginPage() {
@@ -44,7 +44,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <PanelsTopLeft size={40} strokeWidth={2} className="text-slate-700" />
+      <PanelsTopLeft size={40} strokeWidth={1} className="text-slate-700" />
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Login</CardTitle>
@@ -52,7 +52,10 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={form.handleSubmit(handleSubmit)}
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -63,7 +66,7 @@ export default function LoginPage() {
                       <FormControl>
                         <Input
                           placeholder="john@doe.com"
-                          type="email"
+                          // type="email"
                           {...field}
                         />
                       </FormControl>
@@ -76,6 +79,28 @@ export default function LoginPage() {
                   );
                 }}
               ></FormField>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="********"
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              ></FormField>
+              <Button type="submit" variant="outline">
+                Login
+              </Button>
             </form>
           </Form>
         </CardContent>
