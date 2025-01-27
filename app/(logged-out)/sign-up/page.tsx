@@ -78,7 +78,9 @@ export default function SignupPage() {
 
   return (
     <>
-      <PanelsTopLeft size={40} strokeWidth={1} className="text-slate-700" />
+      <Link href={"/"}>
+        <PanelsTopLeft size={40} strokeWidth={1} className="text-slate-700" />
+      </Link>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Signup</CardTitle>
