@@ -9,7 +9,7 @@ export default function LoggedOutLayout({ children }: LoggedOutLayoutProps) {
       <div className="flex flex-col gap-4 min-h-screen items-center justify-center p-6 md:p-24 w-full max-w-md md:max-w-lg mx-auto">
         {children}
       </div>
-      <LightDarkToggle className="fixed top-[calc(50%-12px)] right-2 -mt-3" />
+      <LightDarkToggle className="fixed top-5 right-2 -mt-3" />
     </>
   );
 }
