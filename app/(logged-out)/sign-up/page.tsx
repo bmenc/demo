@@ -37,6 +37,9 @@ const formSchema = zod
     accountType: zod.enum(["personal", "company"]),
     companyName: zod.string().optional(),
     numberOfEmployees: zod.coerce.number().optional(),
+    dateOfBirth: zod.date().refine(() => {
+      return true;
+    }),
   })
   .superRefine((data, context) => {
     if (data.accountType === "company" && !data.companyName) {
