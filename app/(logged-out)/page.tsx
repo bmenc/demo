@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { PanelsTopLeft } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 
 export default function LandingPage() {
   return (
     <>
       <h1 className="flex gap-2 items-center">
-        <PanelsTopLeft size={50} strokeWidth={1} className="text-slate-700" />
+        <LayoutDashboard size={50} strokeWidth={1} className="text-slate-700" />
         Dashboard
       </h1>
       <p>The best Dashboard to manage data flows</p>
