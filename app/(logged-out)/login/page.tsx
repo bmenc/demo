@@ -64,12 +64,14 @@ export default function LoginPage() {
                 render={({ field }) => {
                   return (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel htmlFor="email">Email</FormLabel>
                       <FormControl>
                         <Input
+                          id="email"
                           placeholder="john@doe.com"
                           type="email"
                           {...field}
+                          autoComplete="on"
                         />
                       </FormControl>
                       <FormDescription>
@@ -93,6 +95,7 @@ export default function LoginPage() {
                           placeholder="********"
                           type="password"
                           {...field}
+                          autoComplete="off"
                         />
                       </FormControl>
                       <FormMessage />

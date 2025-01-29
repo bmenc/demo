@@ -1,4 +1,11 @@
 "use client";
+import Link from "next/link";
+import * as zod from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { useForm } from "react-hook-form";
+import { LayoutDashboard, CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,12 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { LayoutDashboard } from "lucide-react";
-import { useForm } from "react-hook-form";
-import * as zod from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -22,6 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Popover } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -30,6 +32,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
+import { Calendar } from "@/components/ui/calendar";
 
 const formSchema = zod
   .object({
@@ -37,9 +41,15 @@ const formSchema = zod
     accountType: zod.enum(["personal", "company"]),
     companyName: zod.string().optional(),
     numberOfEmployees: zod.coerce.number().optional(),
-    dateOfBirth: zod.date().refine(() => {
-      return true;
-    }),
+    dateOfBirth: zod.date().refine((date) => {
+      const today = new Date();
+      const eighteenYearsAgo = new Date(
+        today.getFullYear() - 18,
+        today.getMonth(),
+        today.getDate()
+      );
+      return date <= eighteenYearsAgo;
+    }, "You must be at least 18 years old"),
   })
   .superRefine((data, context) => {
     if (data.accountType === "company" && !data.companyName) {
@@ -79,6 +89,9 @@ export default function SignupPage() {
 
   const accountType = form.watch("accountType");
 
+  const dateFromBirth = new Date();
+  dateFromBirth.setFullYear(dateFromBirth.getFullYear() - 120);
+
   return (
     <>
       <Link href={"/"}>
@@ -101,13 +114,15 @@ export default function SignupPage() {
                 render={({ field }) => {
                   return (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel htmlFor="email">Email</FormLabel>
                       <FormControl>
                         <Input
+                          id="email"
                           placeholder="john@doe.com"
                           type="email"
                           {...field}
                           value={field.value || ""}
+                          autoComplete="on"
                         />
                       </FormControl>
                       <FormMessage />
@@ -122,7 +137,9 @@ export default function SignupPage() {
                   return (
                     <>
                       <FormItem>
-                        <FormLabel>Account type</FormLabel>
+                        <FormLabel htmlFor="accountType">
+                          Account type
+                        </FormLabel>
                         <FormControl>
                           <Select
                             {...field}
@@ -130,7 +147,7 @@ export default function SignupPage() {
                             value={field.value}
                             defaultValue=""
                           >
-                            <SelectTrigger>
+                            <SelectTrigger id="accountType">
                               <SelectValue placeholder="Select an account type" />
                             </SelectTrigger>
                             <SelectContent>
@@ -185,6 +202,53 @@ export default function SignupPage() {
                               {...field}
                               value={field.value || 0}
                             />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
+                  ></FormField>
+                  <FormField
+                    control={form.control}
+                    name="dateOfBirth"
+                    render={({ field }) => {
+                      return (
+                        <FormItem className="flex flex-col pt-2">
+                          <FormLabel>Date of birth</FormLabel>
+                          <FormControl>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className="normal-case flex justify-between pr-3"
+                                  >
+                                    {!!field.value ? (
+                                      format(field.value, "PPP")
+                                    ) : (
+                                      <span> Pick a date</span>
+                                    )}
+                                    <CalendarIcon />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                align="start"
+                                className="w-auto p-0"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  defaultMonth={field.value}
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  fixedWeeks
+                                  weekStartsOn={1}
+                                  fromDate={new Date(dateFromBirth)}
+                                  toDate={new Date()}
+                                  captionLayout="dropdown-buttons"
+                                />
+                              </PopoverContent>
+                            </Popover>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
