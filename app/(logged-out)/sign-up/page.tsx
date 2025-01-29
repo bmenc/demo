@@ -66,7 +66,6 @@ const formSchema = zod
     passwordConfirm: zod.string(),
   })
   .superRefine((data, context) => {
-    // Si es una cuenta de empresa, validar campos requeridos
     if (data.accountType === "company") {
       if (!data.companyName) {
         context.addIssue({
@@ -93,7 +92,6 @@ const formSchema = zod
       }
     }
 
-    // Validación de coincidencia de contraseñas
     if (data.password !== data.passwordConfirm) {
       context.addIssue({
         code: zod.ZodIssueCode.custom,
@@ -108,9 +106,9 @@ export default function SignupPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      accountType: undefined, // No default value for accountType
+      accountType: undefined,
       companyName: "",
-      numberOfEmployees: 0,
+      numberOfEmployees: null, // Set to null to avoid initial 0
     },
   });
 
@@ -235,7 +233,7 @@ export default function SignupPage() {
                               min={0}
                               placeholder="0"
                               {...field}
-                              value={field.value || 0}
+                              value={field.value || ""}
                             />
                           </FormControl>
                           <FormMessage />
