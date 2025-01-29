@@ -37,51 +37,63 @@ import { Calendar } from "@/components/ui/calendar";
 
 const formSchema = zod
   .object({
-    email: zod.string().email(),
+    email: zod.string().email("Invalid email address"),
     accountType: zod.enum(["personal", "company"]),
     companyName: zod.string().optional(),
     numberOfEmployees: zod.coerce.number().optional(),
-    dateOfBirth: zod.date().refine((date) => {
-      const today = new Date();
-      const eighteenYearsAgo = new Date(
-        today.getFullYear() - 18,
-        today.getMonth(),
-        today.getDate()
-      );
-      return date <= eighteenYearsAgo;
-    }, "You must be at least 18 years old"),
+    dateOfBirth: zod
+      .date()
+      .optional()
+      .refine(
+        (date) => {
+          if (!date) return true; // Permitir que sea opcional
+          const today = new Date();
+          const eighteenYearsAgo = new Date(
+            today.getFullYear() - 18,
+            today.getMonth(),
+            today.getDate()
+          );
+          return date <= eighteenYearsAgo;
+        },
+        { message: "You must be at least 18 years old" }
+      ),
     password: zod
       .string()
       .min(8, "Password must be at least 8 characters")
-      .refine((password) => {
-        return (
-          /[A-Z]/.test(password) &&
-          /[a-z]/.test(password) &&
-          /[0-9]/.test(password)
-        );
-      }, "Password must contain at least one uppercase letter, one lowercase letter, and one number"),
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number"),
     passwordConfirm: zod.string(),
   })
   .superRefine((data, context) => {
-    if (data.accountType === "company" && !data.companyName) {
-      context.addIssue({
-        code: zod.ZodIssueCode.custom,
-        path: ["companyName"],
-        message: "Company name is required",
-      });
+    // Si es una cuenta de empresa, validar campos requeridos
+    if (data.accountType === "company") {
+      if (!data.companyName) {
+        context.addIssue({
+          code: zod.ZodIssueCode.custom,
+          path: ["companyName"],
+          message: "Company name is required",
+        });
+      }
+
+      if (!data.numberOfEmployees || data.numberOfEmployees < 1) {
+        context.addIssue({
+          code: zod.ZodIssueCode.custom,
+          path: ["numberOfEmployees"],
+          message: "Number of employees is required",
+        });
+      }
+
+      if (!data.dateOfBirth) {
+        context.addIssue({
+          code: zod.ZodIssueCode.custom,
+          path: ["dateOfBirth"],
+          message: "Date of birth is required",
+        });
+      }
     }
 
-    if (
-      data.accountType === "company" &&
-      (!data.numberOfEmployees || data.numberOfEmployees < 1)
-    ) {
-      context.addIssue({
-        code: zod.ZodIssueCode.custom,
-        path: ["numberOfEmployees"],
-        message: "Number of employees is required",
-      });
-    }
-
+    // Validación de coincidencia de contraseñas
     if (data.password !== data.passwordConfirm) {
       context.addIssue({
         code: zod.ZodIssueCode.custom,
@@ -96,7 +108,7 @@ export default function SignupPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      accountType: undefined,
+      accountType: undefined, // No default value for accountType
       companyName: "",
       numberOfEmployees: 0,
     },
@@ -161,10 +173,8 @@ export default function SignupPage() {
                         </FormLabel>
                         <FormControl>
                           <Select
-                            {...field}
-                            onValueChange={field.onChange}
-                            value={field.value}
-                            defaultValue=""
+                            onValueChange={(value) => field.onChange(value)}
+                            value={field.value || ""}
                           >
                             <SelectTrigger id="accountType">
                               <SelectValue placeholder="Select an account type" />
