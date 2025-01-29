@@ -50,6 +50,17 @@ const formSchema = zod
       );
       return date <= eighteenYearsAgo;
     }, "You must be at least 18 years old"),
+    password: zod
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .refine((password) => {
+        return (
+          /[A-Z]/.test(password) &&
+          /[a-z]/.test(password) &&
+          /[0-9]/.test(password)
+        );
+      }, "Password must contain at least one uppercase letter, one lowercase letter, and one number"),
+    passwordConfirm: zod.string(),
   })
   .superRefine((data, context) => {
     if (data.accountType === "company" && !data.companyName) {
@@ -68,6 +79,14 @@ const formSchema = zod
         code: zod.ZodIssueCode.custom,
         path: ["numberOfEmployees"],
         message: "Number of employees is required",
+      });
+    }
+
+    if (data.password !== data.passwordConfirm) {
+      context.addIssue({
+        code: zod.ZodIssueCode.custom,
+        path: ["passwordConfirm"],
+        message: "Passwords must match",
       });
     }
   });
@@ -122,7 +141,7 @@ export default function SignupPage() {
                           type="email"
                           {...field}
                           value={field.value || ""}
-                          autoComplete="on"
+                          autoComplete="off"
                         />
                       </FormControl>
                       <FormMessage />
@@ -174,9 +193,12 @@ export default function SignupPage() {
                     render={({ field }) => {
                       return (
                         <FormItem>
-                          <FormLabel>Company name</FormLabel>
+                          <FormLabel htmlFor="companyName">
+                            Company name
+                          </FormLabel>
                           <FormControl>
                             <Input
+                              id="companyName"
                               placeholder="Acme Inc."
                               {...field}
                               value={field.value || ""}
@@ -193,9 +215,12 @@ export default function SignupPage() {
                     render={({ field }) => {
                       return (
                         <FormItem>
-                          <FormLabel>Employees</FormLabel>
+                          <FormLabel htmlFor="numberOfEmployees">
+                            Employees
+                          </FormLabel>
                           <FormControl>
                             <Input
+                              id="numberOfEmployees"
                               type="number"
                               min={0}
                               placeholder="0"
@@ -214,7 +239,9 @@ export default function SignupPage() {
                     render={({ field }) => {
                       return (
                         <FormItem className="flex flex-col pt-2">
-                          <FormLabel>Date of birth</FormLabel>
+                          <FormLabel htmlFor="dateOfBirth">
+                            Date of birth
+                          </FormLabel>
                           <FormControl>
                             <Popover>
                               <PopoverTrigger asChild>
@@ -257,6 +284,52 @@ export default function SignupPage() {
                   ></FormField>
                 </>
               )}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel htmlFor="password">Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="password"
+                          placeholder="••••••••"
+                          type="password"
+                          {...field}
+                          value={field.value || ""}
+                          autoComplete="off"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              ></FormField>
+              <FormField
+                control={form.control}
+                name="passwordConfirm"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel htmlFor="passwordConfirm">
+                        Confirm password
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          id="passwordConfirm"
+                          placeholder="••••••••"
+                          type="password"
+                          {...field}
+                          value={field.value || ""}
+                          autoComplete="off"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              ></FormField>
               <Button type="submit" variant="outline">
                 Sign up
               </Button>
