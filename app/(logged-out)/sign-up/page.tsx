@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { LayoutDashboard, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Card,
   CardContent,
@@ -21,6 +23,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover } from "@/components/ui/popover";
@@ -47,7 +50,7 @@ const formSchema = zod
       .optional()
       .refine(
         (date) => {
-          if (!date) return true; // Permitir que sea opcional
+          if (!date) return true;
           const today = new Date();
           const eighteenYearsAgo = new Date(
             today.getFullYear() - 18,
@@ -65,6 +68,9 @@ const formSchema = zod
       .regex(/[a-z]/, "Password must contain at least one lowercase letter")
       .regex(/[0-9]/, "Password must contain at least one number"),
     passwordConfirm: zod.string(),
+    acceptTerms: zod.boolean().refine((value) => value, {
+      message: "You must accept the terms and conditions",
+    }),
   })
   .superRefine((data, context) => {
     if (data.accountType === "company") {
@@ -103,6 +109,7 @@ const formSchema = zod
   });
 
 export default function SignupPage() {
+  const router = useRouter();
   const form = useForm<zod.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -115,6 +122,7 @@ export default function SignupPage() {
 
   function handleSubmit(data: zod.infer<typeof formSchema>) {
     console.log(data);
+    router.push("/dashboard");
   }
 
   const accountType = form.watch("accountType");
@@ -346,6 +354,36 @@ export default function SignupPage() {
                           autoComplete="off"
                         />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              ></FormField>
+              <FormField
+                control={form.control}
+                name="acceptTerms"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <div className="flex flex-row gap-2 items-center">
+                        <FormControl>
+                          <Checkbox
+                            id="acceptTerms"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormLabel>I accept the terms and conditions</FormLabel>
+                      </div>
+                      <FormDescription>
+                        By signing up you agree to our {""}
+                        <Link
+                          href={"/"}
+                          className="text-primary hover:underline"
+                        >
+                          terms of service
+                        </Link>
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   );
