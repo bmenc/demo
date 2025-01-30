@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const formSchema = zod.object({
   email: zod.string().email(),
@@ -91,9 +92,15 @@ export default function LoginPage() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input
+                        {/* <Input
                           placeholder="********"
                           type="password"
+                          {...field}
+                          autoComplete="off"
+                        /> */}
+                        <PasswordInput
+                          id="password"
+                          placeholder="••••••••"
                           {...field}
                           autoComplete="off"
                         />

@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select";
 import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { Calendar } from "@/components/ui/calendar";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const formSchema = zod
   .object({
@@ -108,7 +109,7 @@ export default function SignupPage() {
       email: "",
       accountType: undefined,
       companyName: "",
-      numberOfEmployees: null, // Set to null to avoid initial 0
+      numberOfEmployees: undefined,
     },
   });
 
@@ -300,12 +301,18 @@ export default function SignupPage() {
                     <FormItem>
                       <FormLabel htmlFor="password">Password</FormLabel>
                       <FormControl>
-                        <Input
+                        {/* <Input
                           id="password"
                           placeholder="••••••••"
                           type="password"
                           {...field}
                           value={field.value || ""}
+                          autoComplete="off"
+                        /> */}
+                        <PasswordInput
+                          id="password"
+                          placeholder="••••••••"
+                          {...field}
                           autoComplete="off"
                         />
                       </FormControl>
@@ -324,12 +331,18 @@ export default function SignupPage() {
                         Confirm password
                       </FormLabel>
                       <FormControl>
-                        <Input
+                        {/* <Input
                           id="passwordConfirm"
                           placeholder="••••••••"
                           type="password"
                           {...field}
                           value={field.value || ""}
+                          autoComplete="off"
+                        /> */}
+                        <PasswordInput
+                          id="passwordConfirm"
+                          placeholder="••••••••"
+                          {...field}
                           autoComplete="off"
                         />
                       </FormControl>

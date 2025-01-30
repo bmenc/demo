@@ -86,7 +86,7 @@ const Calendar = React.memo(function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "bg-white dark:bg-black z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none",
+        "bg-white dark:bg-black w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none",
         className
       )}
       classNames={{

@@ -98,4 +98,10 @@ body {
   h6 {
     font-size: 1rem;
   }
+
+  [data-radix-popper-content-wrapper] {
+    z-index: 9999 !important;
+  }
+
 }
+
