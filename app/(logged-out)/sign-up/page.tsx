@@ -262,39 +262,41 @@ export default function SignupPage() {
                             Date of birth
                           </FormLabel>
                           <FormControl>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className="normal-case flex justify-between pr-3"
-                                  >
-                                    {!!field.value ? (
-                                      format(field.value, "PPP")
-                                    ) : (
-                                      <span> Pick a date</span>
-                                    )}
-                                    <CalendarIcon />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                align="start"
-                                className="w-auto p-0"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  defaultMonth={field.value}
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  fixedWeeks
-                                  weekStartsOn={1}
-                                  fromDate={new Date(dateFromBirth)}
-                                  toDate={new Date()}
-                                  captionLayout="dropdown-buttons"
-                                />
-                              </PopoverContent>
-                            </Popover>
+                            <div className="!z-[9999]">
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <FormControl>
+                                    <Button
+                                      variant={"outline"}
+                                      className="normal-case flex justify-between pr-3 w-full"
+                                    >
+                                      {!!field.value ? (
+                                        format(field.value, "PPP")
+                                      ) : (
+                                        <span> Pick a date</span>
+                                      )}
+                                      <CalendarIcon />
+                                    </Button>
+                                  </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                  align="start"
+                                  className="w-auto p-0"
+                                >
+                                  <Calendar
+                                    mode="single"
+                                    defaultMonth={field.value}
+                                    selected={field.value}
+                                    onSelect={field.onChange}
+                                    fixedWeeks
+                                    weekStartsOn={1}
+                                    fromDate={new Date(dateFromBirth)}
+                                    toDate={new Date()}
+                                    captionLayout="dropdown-buttons"
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
