@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { LayoutDashboard } from "lucide-react";
+import { PanelsTopLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,7 +46,7 @@ export default function LoginPage() {
   return (
     <>
       <Link href={"/"}>
-        <LayoutDashboard size={40} strokeWidth={1} className="text-slate-700" />
+        <PanelsTopLeft size={40} strokeWidth={1} className="text-slate-700" />
       </Link>
       <Card className="w-full max-w-sm">
         <CardHeader>

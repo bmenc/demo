@@ -5,7 +5,7 @@ import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
-import { LayoutDashboard, CalendarIcon } from "lucide-react";
+import { PanelsTopLeft, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -135,7 +135,7 @@ export default function SignupPage() {
   return (
     <>
       <Link href={"/"}>
-        <LayoutDashboard size={40} strokeWidth={1} className="text-slate-700" />
+        <PanelsTopLeft size={40} strokeWidth={1} className="text-slate-700" />
       </Link>
       <Card className="w-full max-w-sm">
         <CardHeader>
