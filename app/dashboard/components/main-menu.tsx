@@ -9,7 +9,7 @@ export default function MainMenu({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        `bg-muted overflow-auto p-4 flex flex-col gap-4 h-full`,
+        `md:bg-muted overflow-auto p-4 flex flex-col gap-4 h-full`,
         className
       )}
     >

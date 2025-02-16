@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { useRouter } from "next/navigation";
 
 const formSchema = zod.object({
   email: zod.string().email(),
@@ -31,6 +32,8 @@ const formSchema = zod.object({
 });
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const form = useForm<zod.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,6 +44,7 @@ export default function LoginPage() {
 
   function handleSubmit(data: zod.infer<typeof formSchema>) {
     console.log(data);
+    router.push("/dashboard");
   }
 
   return (
